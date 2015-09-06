@@ -1,2 +1,5 @@
-# sonic-pies
-random musings with Sonic Pi
+# Sonic Pies
+
+Random musings with Sonic Pi.
+
+Feel free to reuse, share, hack, etc
