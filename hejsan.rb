@@ -43,3 +43,28 @@ live_loop :bass do
     end
   end
 end
+
+live_loop :sync do
+  seq = [[0.5, 5, :F5],
+         [0.5, 3, :Cs5],
+         [0.5, 5, :Ds5],
+         [0.5, 3, :E5 ]].ring
+
+  item = seq.tick
+  time = item[0]
+  iter = item[1]
+  note = item[2]
+
+  use_synth :dark_ambience
+  with_fx :reverb do
+    play chord(note), amp: 4, sustain: time * iter, noise: 2, ring: 0.5
+  end
+
+  with_fx :bitcrusher do
+    iter.times do
+      use_synth :mod_dsaw
+      play note - 12
+      sleep time
+    end
+  end
+end
