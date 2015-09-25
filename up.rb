@@ -14,7 +14,7 @@ end
 
 live_loop :beats_clap do
   with_fx :reverb do
-    sample :bd_ada, rate: 14, amp: line(0.25, 2, steps: 64).tick
+    sample :bd_ada, rate: 14, amp: line(0.25, 2, steps: 128).tick
   end
   sleep 1
 end
