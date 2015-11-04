@@ -1,5 +1,7 @@
 # Sebastien Rannou <mxs@sbrk.org> @aimxhaisse
 
+# beats
+
 live_loop :beats do
   with_fx :echo, phase: 0.1, mix: 0.05 do
     with_fx :rhpf, cutoff: 90, res: 0.8 do
@@ -25,5 +27,21 @@ live_loop :beats do
     sleep 0.25
     sample :sn_dub
     sleep 0.25
+  end
+end
+
+live_loop :beats do
+  beats_flavor = {:mix => 0.9, :sample_rate => 2000, :cutoff => 70}
+
+  with_fx :lpf, **beats_flavor do
+    with_fx :bitcrusher, **beats_flavor do
+      16.times do
+        tick
+        sample :bd_haus if spread(1, 4).look
+        sample :elec_cymbal, amp: 0.5, beat_stretch: 0.1 if spread(1, 8).look
+        synth :bnoise, release: 0, amp: 0.125, attack: 0.3, cutoff: 129, res: 0.5 if spread(1, 8).look
+        sleep 0.125
+      end
+    end
   end
 end
