@@ -4,21 +4,33 @@
 
 use_bpm 123
 
-# Base sample extracted from Il Maqcuillage Lade - Sister Sledge
+# Base sample extracted from Il Maqcuillage Lady - Sister Sledge
 
 aero_base = "~/il-maquillage-lady-sample.aiff"
 load_sample aero_base
 
 # Introduction
 
+define :daft_bell do |n|
+  use_synth :pretty_bell
+
+  synth :pretty_bell, note: n - 12, amp: 0.1, attack: 0, decay: 8, release: 2
+  synth :pretty_bell, note: n - 9, amp: 0.1, attack: 0, decay: 8, release: 2
+  synth :pretty_bell, note: n, amp: 2, attack: 0, decay: 3, sustain_level: 0.5, release: 3
+  synth :pretty_bell, note: n + 4, amp: 0.25, attack: 0, decay: 0.5, release: 2
+  synth :pretty_bell, note: n + 7, amp: 0.05, attack: 1, release: 4
+  synth :pretty_bell, note: n + 9, amp: 0.05, attack: 0, release: 3
+  synth :pretty_bell, note: n + 12, amp: 1, attack: 0, decay: 4, sustain_level: 0.5, release: 2
+  synth :pretty_bell, note: n + 14, amp: 0.25, attack: 0, release: 4
+  synth :pretty_bell, note: n + 17, amp: 0.20, attack: 0, release: 3
+  synth :pretty_bell, note: n + 21, amp: 0.125, attack: 0, decay: 1, sustain_level: 0.125, release: 4
+end
+
 live_loop :intro do
   sync :do_intro
 
-  use_synth :pretty_bell
-  use_synth_defaults release: 4, decay: 2, amp: 4, attack_level: 1.5, release_level: 0.5, decay_level: 0.125
-
   with_fx :reverb, root: 0.75 do
-    play :A3
+    daft_bell :A3
     sleep 8
   end
 end
@@ -77,7 +89,7 @@ live_loop :solo do
   sync :do_solo
 
   use_synth :zawa
-  use_synth_defaults attack: 0.03, sustain: 0.17, release: 0.1, res: 0.8, phase: 2, wave: 2, amp: 1
+  use_synth_defaults attack: 0.03, sustain: 0.17, release: 0.1, res: 0.9, phase: 2, wave: 2, amp: 0.5
 
   with_transpose 12 do
     c = solo_chords.ring.tick(:patterns)
@@ -96,6 +108,18 @@ live_loop :solo do
   end
 end
 
+live_loop :advanced do
+  sync :do_advanced
+  32.times do
+    tick
+    sample :bd_tek, amp: 1.5 if spread(1, 16).look
+    sample :bd_tek, amp: 1.5 if spread(1, 32).rotate(4).look
+    synth :cnoise, release: 0.5, cutoff: 130, env_curve: 7, amp: 2 if spread(1, 16).rotate(8).look
+    synth :cnoise, release: 0.1, cutoff: 130, env_curve: 7, amp: 0.5 if spread(1, 2).look
+    sleep 0.125
+  end
+end
+
 live_loop :aerodynamix do
   4.times do
     cue :do_intro
@@ -106,12 +130,23 @@ live_loop :aerodynamix do
     sleep 4
   end
   16.times do
+    cue :do_verse
+    cue :do_advanced
+    sleep 4
+  end
+  16.times do
     cue :do_solo
     sleep 4
   end
   16.times do
     cue :do_solo
+    cue :do_advanced
+    sleep 4
+  end
+  16.times do
+    cue :do_solo
     cue :do_verse
+    cue :do_advanced
     sleep 4
   end
   cue :do_intro
