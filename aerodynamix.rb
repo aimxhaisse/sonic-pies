@@ -52,22 +52,22 @@ end
 
 live_loop :verse do
   sync :do_verse
-
   alt = [false, false, false, true].ring.tick(:flavor)
-  do_invert_flanger = [0, 1].ring.tick(:invert_flanger)
 
-  samples = [[[:bass_1], 0.5],
-             [[:guit_1, :guit_3], 0.25],
-             [[:bass_1], 0.5],
-             [[:guit_3], 0.25],
-             [[:bass_1], 0.5],
-             [[:guit_2], 0.5],
-             [[:guit_1], 1],
-             [[:bass_2], 0.5]]
+  verse_samples = [[[:bass_1], 0.5],
+                   [[:guit_1, :guit_3], 0.25],
+                   [[:bass_1], 0.5],
+                   [[:guit_3], 0.25],
+                   [[:bass_1], 0.5],
+                   [[:guit_2], 0.5],
+                   [[:guit_1], 1],
+                   [[:bass_2], 0.5]]
 
-  samples.each do |s, delay|
-    aero_sample(s, alt)
-    sleep delay
+  with_fx :compressor do
+    verse_samples.each do |s, delay|
+      aero_sample(s, alt)
+      sleep delay
+    end
   end
 end
 
@@ -88,20 +88,24 @@ solo_chords = [
 live_loop :solo do
   sync :do_solo
 
-  use_synth :zawa
-  use_synth_defaults attack: 0.03, sustain: 0.17, release: 0.1, res: 0.9, phase: 2, wave: 2, amp: 0.5
+  use_synth :prophet
+  use_synth_defaults attack: 0.05, sustain: 0.15, release: 0.5, res: 0.9, phase: 2, amp: 0.5
 
-  with_transpose 12 do
-    c = solo_chords.ring.tick(:patterns)
-    with_fx :bitcrusher, sample_rate: 8000, mix: 0.5 do
-      4.times do
-        melody = c.dup
-        melody.push(c[1])
-        tick_reset :note
-        4.times do
-          n = melody.ring.tick(:note)
-          play note: n
-          sleep 0.25
+  with_fx :reverb, mix: 0.2 do
+    with_fx :distortion, distort: 0.9, mix: 0.25 do
+      with_fx :bitcrusher, mix: 0.5, sample_rate: 8500 do
+        with_transpose 24 do
+          c = solo_chords.ring.tick(:patterns)
+          4.times do
+            melody = c.dup
+            melody.push(c[1])
+            tick_reset :note
+            4.times do
+              n = melody.ring.tick(:note)
+              play note: n
+              sleep 0.25
+            end
+          end
         end
       end
     end
@@ -110,45 +114,22 @@ end
 
 live_loop :advanced do
   sync :do_advanced
-  32.times do
-    tick
-    sample :bd_tek, amp: 1.5 if spread(1, 16).look
-    sample :bd_tek, amp: 1.5 if spread(1, 32).rotate(4).look
-    synth :cnoise, release: 0.5, cutoff: 130, env_curve: 7, amp: 2 if spread(1, 16).rotate(8).look
-    synth :cnoise, release: 0.1, cutoff: 130, env_curve: 7, amp: 0.5 if spread(1, 2).look
-    sleep 0.125
+  with_fx :level, amp: 1 do
+    32.times do
+      tick
+      sample :bd_fat, amp: 2 if spread(1, 16).look
+      sample :bd_fat, amp: 1.5 if spread(1, 32).rotate(4).look
+      synth :cnoise, release: 0.6, cutoff: 130, env_curve: 7, amp: 1 if spread(1, 16).rotate(8).look
+      synth :cnoise, release: 0.1, cutoff: 130, env_curve: 7, amp: 0.25 if spread(1, 2).look
+      sleep 0.125
+    end
   end
 end
 
 live_loop :aerodynamix do
-  4.times do
-    cue :do_intro
-    sleep 8
-  end
-  16.times do
-    cue :do_verse
-    sleep 4
-  end
-  16.times do
-    cue :do_verse
-    cue :do_advanced
-    sleep 4
-  end
-  16.times do
-    cue :do_solo
-    sleep 4
-  end
-  16.times do
-    cue :do_solo
-    cue :do_advanced
-    sleep 4
-  end
-  16.times do
-    cue :do_solo
-    cue :do_verse
-    cue :do_advanced
-    sleep 4
-  end
-  cue :do_intro
-  stop
+  cue :do_solo
+  cue :do_advanced
+  cue :do_verse
+  # cue :do_intro
+  sleep 4
 end
