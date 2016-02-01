@@ -56,11 +56,14 @@ live_loop :motive do
   use_synth :fm
   use_synth_defaults release: 0.125, sustain: 0
 
-  with_fx :krush, res: 0.9, cutoff: 120 do
-    play chord(note_base + 36).choose if spread(3, 5).ring.tick
-  end
+  tick(:basstick)
 
-  sleep 0.25
+  with_fx :krush, res: 0.9, cutoff: 120 do
+    16.times do
+      play chord(note_base + 36 + note_offset.look(:basstick)).choose if spread(3, 5).ring.tick
+      sleep 0.25
+    end
+  end
 end
 
 live_loop :bass do
