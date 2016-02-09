@@ -1,9 +1,12 @@
 # Aerodynamix - by s. rannou <mxs@sbrk.org> @aimxhaisse
 #
 # An attempt to recreate 'Daft Punk - Aerodynamic'
+#
+# https://aimxhaisse.com/aerodynamic-en.html
 
 use_bpm 123
 
+# These samples can be found in the samples directory
 maquillage = "~/il-macquillage-lady.wav"
 aerodynamic = "~/funk.wav"
 
@@ -118,7 +121,7 @@ live_loop :extra_beat do
 end
 
 live_loop :intro do
-  stop # remove me if you want bells
+  stop
 
   sync :main
 
