@@ -18,4 +18,7 @@ In E minor
 
 use_bpm 130
 _0x01 = "/users/mxs/work/sonic-pies/songs/h4ckz/0x01/"
+
+# arp, bass, beats, plucked, strings
+
 ```
