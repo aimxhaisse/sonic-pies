@@ -7,8 +7,8 @@
 # mxs @ camembert au lait crew
 # https://mxs.sbrk.org/
 
-use_bpm 142
+use_bpm 142 # @32
 _0x03 = "/users/mxs/work/sonic-pies/songs/h4ckz/0x03/"
 
-# beats, mel, synth, bass, slow
+# bass, synth, beats, mel, synth, bass, slow
 ```

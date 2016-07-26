@@ -16,9 +16,9 @@ In E minor
 # mxs @ camembert au lait crew
 # https://mxs.sbrk.org/
 
-use_bpm 130
+use_bpm 130 # @ 32
 _0x02 = "/users/mxs/work/sonic-pies/songs/h4ckz/0x02/"
 
-# arp, bass, beats, plucked, strings, lyr-je-suis-une-boucle-etrange-fin
+# strings, plucked, arp, bass, beats, plucked, lyr-je-suis-une-boucle-etrange-fin
 
 ```
