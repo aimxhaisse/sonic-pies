@@ -10,5 +10,5 @@
 use_bpm 128 # @ 16
 _0x04 = "/users/mxs/work/sonic-pies/songs/h4ckz/0x04/"
 
-# beats, chord, houel, scratch
+# beats_1, beats_2, beats_3, beats_4, chord_1, houel, scratch_1
 ```
