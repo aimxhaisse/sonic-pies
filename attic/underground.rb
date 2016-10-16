@@ -1,0 +1,62 @@
+# WIP
+
+use_bpm 124
+
+define :mplay do |c|
+  if c == 'k'
+    sample :bd_haus, lpf: :E4
+  end
+  if c == 'b'
+    sample :bd_klub
+  end
+  if c == 's'
+    with_fx :reverb, mix: 0.5 do
+      with_fx :krush do
+        sample :bd_fat, start: 0.15, finish: 0.2, rate: 0.4, amp: 0.25
+      end
+    end
+  end
+  if c == 'c'
+    synth :noise, release: 0.125, amp: 0.25, res: 0.999, cutoff: :E3
+  end
+end
+
+define :clear do |s|
+  s.gsub(/\s+/, "")
+end
+
+live_loop :main do
+  patterns = [
+    clear("k... .... k... ...."),
+    clear(".... .... s... ...."),
+    clear(".... .... .... ...."),
+    clear(".c.. ..c. ..c. c..."),
+  ].ring
+  
+  16.times do |i|
+    patterns.each do |s|
+      mplay s[i]
+    end
+    
+    sleep 0.125
+  end
+end
+
+notes = [:E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :F2,  :G2].ring
+cutoff = [-5, 0, 5, 12]
+variations = "_-__-`____-``_``".ring
+
+live_loop :dark_lead, sync: :main do
+  c = 24
+  with_fx :wobble, phase: 1, wave: 1, cutoff_min: :E2 + c, cutoff_max: :E5 + c do
+    with_fx :bitcrusher do
+      s = synth :fm, pulse_width: 0.9, sustain: notes.length, release: 0, amp: 0.25, cutoff: :E5
+      notes.each do |n|
+        n = n + 12
+        control s, note: n, cutoff: n + c
+        sleep 1
+      end
+    end
+  end
+end
+
