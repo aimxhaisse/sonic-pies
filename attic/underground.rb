@@ -1,4 +1,4 @@
-# Still WIP
+# Still still WIP
 
 use_bpm 124
 
@@ -47,7 +47,7 @@ cutoff = [-5, 0, 5, 12]
 variations = "_-__-`____-``_``".ring
 
 live_loop :dark_lead, sync: :main do
-  c = 24
+  c = 0
   with_fx :wobble, phase: 1, wave: 1, cutoff_min: :E2 + c, cutoff_max: :E6 do
     with_fx :bitcrusher do
       s = synth :fm, pulse_width: 0.9, sustain: notes.length, release: 0, amp: 0.25
@@ -60,9 +60,23 @@ live_loop :dark_lead, sync: :main do
   end
 end
 
+live_loop :melody, sync: :main do
+  total = 0
+  with_fx :vowel, voice: 3 do
+    with_fx :flanger do
+      [[:E3, 0.25], [:C4, 0.25], [:E3, 0.75], [:Gs3, 0.5], [:G3, 0.75], [:G3, 0.25], [:E3, 1]].each do |n, r|
+        synth :fm, note: n, release: r, amp: 2
+        sleep r
+        total = total + r
+      end
+    end
+  end
+  sleep 4 - total
+end
+
 live_loop :dark_bass, sync: :main do
   c = 0
-  with_fx :wobble, phase: 16, invert_wave: 1, phase: 32, cutoff_min: 110, cutoff_max: 110 do
+  with_fx :wobble, phase: 16, invert_wave: 1, phase: 32, cutoff_min: 100, cutoff_max: 110 do
     with_fx :wobble, phase: 1, res: 0, smooth_down: 0.2, smooth_down: 0.2 do
       notes.each do |n|
         use_synth :fm
