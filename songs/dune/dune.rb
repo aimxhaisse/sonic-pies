@@ -38,14 +38,14 @@ end
 live_loop :main do
   empty = ".... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ...."
   patterns = [
-    pclear("k... ...."),
-    pclear(".... .... s... ...."),
-    pclear("h... .... .... .... .... .... .... ...."),
-    pclear(".... .... x... ...."),
-    pclear("y... .... .... ...."),
-    pclear("f... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ...." + empty),
-    pclear("t... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ...." + empty),
-    pclear("b... ...."),
+    #  pclear("k... ...."),
+    #  pclear(".... .... s... ...."),
+    #  pclear("h... .... .... .... .... .... .... ...."),
+    #  pclear(".... .... x... ...."),
+    #  pclear("y... .... .... ...."),
+    #  pclear("f... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ...." + empty),
+    #  pclear("t... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ...." + empty),
+    #  pclear("b... ...."),
   ].ring
   
   128.times do |i|
@@ -59,7 +59,9 @@ end
 
 notes = [:E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :E2,  :F2,  :G2].ring
 live_loop :dark_lead, sync: :main do
-  c = 24
+  stop
+  
+  c = 0
   with_fx :wobble, phase: 1, wave: 1, cutoff_min: :E2 + c, cutoff_max: :E6 do
     with_fx :bitcrusher do
       s1 = synth :fm, sustain: notes.length, release: 0
@@ -67,7 +69,7 @@ live_loop :dark_lead, sync: :main do
       notes.each do |n|
         n = n + 12
         control s1, note: n, cutoff: n + c, amp: 0.5
-        control s2, note: n + 12, cutoff: n + c, amp: 0.25
+        control s2, note: n + 12, cutoff: n + c, amp: 0
         sleep 1
       end
     end
@@ -75,8 +77,10 @@ live_loop :dark_lead, sync: :main do
 end
 
 live_loop :rise, sync: :main do
-  with_fx :lpf, cutoff: 70, cutoff_slide: 16 do |s|
-    control s, cutoff: 70
+  stop
+  
+  with_fx :lpf, cutoff: 40, cutoff_slide: 16 do |s|
+    control s, cutoff: 40
     with_fx :vowel, voice: 0, mix: 0.75 do
       with_fx :wobble, phase: 1, wave: 1, mix: 0.125 do
         with_fx :reverb do
@@ -94,10 +98,12 @@ live_loop :rise, sync: :main do
 end
 
 live_loop :melody, sync: :main do
+  stop
+  
   with_fx :panslicer, phase: 0.5, mix: 0.125 do
-    with_fx :wobble, invert_wave: 1, phase: 1, cutoff_min: 100, cutoff_max: 105 do
-      with_fx :lpf, cutoff: 120, cutoff_slide: 16 do |s|
-        control s, cutoff: 120
+    with_fx :wobble, invert_wave: 1, phase: 1, cutoff_min: 60, cutoff_max: 80 do
+      with_fx :lpf, cutoff: 40, cutoff_slide: 16 do |s|
+        control s, cutoff: 40
         with_fx :flanger do
           [
             [[:E3, 0.5], [:E3, 0.25], [:E3, 0.75], [:E3, 1], [:E3, 0.5], [:G3, 0.25], [:E3, 1]],
@@ -108,8 +114,8 @@ live_loop :melody, sync: :main do
             total = 0
             mel.each do |n, r|
               synth :tech_saws, note: n + 12, res: 0, release: r, amp: 0.5
-              synth :dpulse, note: n + 12, res: 0, release: r, amp: 0.20
-              synth :pluck, note: n + 12, res: 0, release: r, amp: 0.50
+              #  synth :dpulse, note: n + 12, res: 0, release: r, amp: 0.20
+              #  synth :pluck, note: n + 12, res: 0, release: r, amp: 0.50
               
               sleep r
               total = total + r
@@ -123,7 +129,9 @@ live_loop :melody, sync: :main do
 end
 
 live_loop :dark_bass, sync: :main do
-  c = 24
+  stop
+  
+  c = 0
   with_fx :wobble, phase: 1, res: 0, smooth_down: 0.2, smooth_down: 0.2 do
     notes.each do |n|
       use_synth :fm
@@ -136,4 +144,3 @@ live_loop :dark_bass, sync: :main do
     end
   end
 end
-
