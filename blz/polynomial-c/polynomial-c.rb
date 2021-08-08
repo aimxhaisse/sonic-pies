@@ -2,13 +2,19 @@
 #
 # Made with Sonic Pi (sonic-pi.net) & BLZ Audio (blz.sbrk.org)
 
+
 use_bpm 138
 
 chords = [
+  #
   [64, 69, 73], [64, 68, 73]
 ]
 
 pattern = "12123-12123-123-".ring
+
+define :rdn do |x, y|
+  return x + y * rand
+end
 
 define :mk_bassline do |c|
   i = 0
@@ -23,18 +29,23 @@ define :mk_bassline do |c|
 end
 
 live_loop :bass_motive do
+  flavor = 1
   offset = 12
+  
+  if flavor == 0
+    sleeps = [2, 2, 1, 1, 2]
+    sustains = [0.2, 0.4, 0.3, 0.1, 0.7]
+  else
+    sleeps = [2, 1.0, 1.0, 0.5, 3.5]
+    sustains = [0.2, 0.2, 0.1, 0.1, 0.3]
+  end
+  
   2.times do |i|
-    midi chords[i][1] + offset, sustain: 0.6, channel: 4, vel: 120
-    sleep 2
-    midi chords[i][1] + offset, sustain: 1.1, channel: 4, vel: 120
-    sleep 2
-    midi chords[i][1] + offset, sustain: 0.8, channel: 4, vel: 120
-    sleep 1
-    midi chords[i][1] + offset, sustain: 0.8, channel: 4, vel: 120
-    sleep 1
-    midi chords[(i + 1) % 2][1] + offset, sustain: 0.7,  channel: 4, vel: 120
-    sleep 2
+    sleeps.length.times do |j|
+      note = chords[(i + (j / 4)) % 2][1] + offset
+      midi note, sustain: sustains[j], channel: 4, vel: rdn(78, 80)
+      sleep sleeps[j]
+    end
   end
 end
 
@@ -49,11 +60,6 @@ live_loop :bass do
   end
 end
 
-live_loop :filter do
-  
-  sleep 64
-end
-
 live_loop :arp do
   chords.each do |c|
     2.times do
@@ -66,22 +72,32 @@ live_loop :arp do
 end
 
 patterns = [
-  "k.k.....k.k.....",
-  "..K.............",
-  "....s..s....s...",
-  ".H.H.HH.HH.HHHHH",
+  [
+    ".H.H.HH.HH.HHHHH",
+  ],
+  [
+    "k.k.....k.k.....",
+    "..K.............",
+    "....s..s....s...",
+    "....S..S....S...",
+    ".H.H.HH.HH.HHHHH",
+  ],
 ]
 
 live_loop :drums do
-  offset = 12
-  16.times do |i|
-    patterns.each do |p|
-      midi 5 + offset, channel: 1 if p[i] == 'k'
-      midi 11 + offset, channel: 1 if p[i] == 'K'
-      midi 25 + offset, channel: 1 if p[i] == 's'
-      midi 19 + offset, vel: [200, 97, 102, 130, 200, 96].ring[i], channel: 1 if p[i] == 'H'
+  current = 1
+  offset = 36
+  4.times do
+    16.times do |i|
+      patterns[current].each do |p|
+        midi 0 + offset, channel: 1 if p[i] == 'k'
+        midi 1 + offset, velocity: 128, channel: 1 if p[i] == 'K'
+        midi 2 + offset, channel: 1 if p[i] == 's'
+        midi 3 + offset, channel: 1 if p[i] == 'S'
+        midi 6 + offset, vel: [200, 97, 102, 130, 200, 96].ring[i], channel: 1 if p[i] == 'H'
+      end
+      
+      sleep 0.25
     end
-    
-    sleep 0.25
   end
 end
