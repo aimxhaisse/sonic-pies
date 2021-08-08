@@ -6,7 +6,6 @@
 use_bpm 138
 
 chords = [
-  #
   [64, 69, 73], [64, 68, 73]
 ]
 
@@ -29,22 +28,25 @@ define :mk_bassline do |c|
 end
 
 live_loop :bass_motive do
-  flavor = 1
+  flavor = 2
   offset = 12
   
-  if flavor == 0
-    sleeps = [2, 2, 1, 1, 2]
-    sustains = [0.2, 0.4, 0.3, 0.1, 0.7]
-  else
-    sleeps = [2, 1.0, 1.0, 0.5, 3.5]
-    sustains = [0.2, 0.2, 0.1, 0.1, 0.3]
-  end
-  
-  2.times do |i|
-    sleeps.length.times do |j|
-      note = chords[(i + (j / 4)) % 2][1] + offset
-      midi note, sustain: sustains[j], channel: 4, vel: rdn(78, 80)
-      sleep sleeps[j]
+  if flavor == 0 || flavor == 1
+    sleeps = flavor == 0 ? [2, 2, 1, 1, 2] : [2, 1.0, 1.0, 0.5, 3.5]
+    sustains = flavor == 0 ? [0.2, 0.4, 0.3, 0.1, 0.7] : [0.2, 0.2, 0.1, 0.1, 0.3]
+    2.times do |i|
+      sleeps.length.times do |j|
+        note = chords[(i + (j / 4)) % 2][1] + offset
+        midi note, sustain: sustains[j], channel: 4, vel: 80
+        sleep sleeps[j]
+      end
+    end
+  elsif flavor == 2
+    sleeps = [2, 2, 2, 2, 2, 2, 2, 2]
+    notes =  [75, 77, 75, 67, 70, 72, 75, 72]
+    sleeps.length.times do |i|
+      midi notes[i] + offset, sustain: 1.5, channel: 4, vel: 80
+      sleep sleeps[i]
     end
   end
 end
