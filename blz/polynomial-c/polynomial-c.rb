@@ -11,10 +11,6 @@ chords = [
 
 pattern = "12123-12123-123-".ring
 
-define :rdn do |x, y|
-  return x + y * rand
-end
-
 define :mk_bassline do |c|
   i = 0
   seq = []
@@ -28,26 +24,18 @@ define :mk_bassline do |c|
 end
 
 live_loop :bass_motive do
-  flavor = 2
   offset = 12
-  
-  if flavor == 0 || flavor == 1
-    sleeps = flavor == 0 ? [2, 2, 1, 1, 2] : [2, 1.0, 1.0, 0.5, 3.5]
-    sustains = flavor == 0 ? [0.2, 0.4, 0.3, 0.1, 0.7] : [0.2, 0.2, 0.1, 0.1, 0.3]
-    2.times do |i|
-      sleeps.length.times do |j|
-        note = chords[(i + (j / 4)) % 2][1] + offset
-        midi note, sustain: sustains[j], channel: 4, vel: 80
-        sleep sleeps[j]
-      end
-    end
-  elsif flavor == 2
-    sleeps = [2, 2, 2, 2, 2, 2, 2, 2]
-    notes =  [75, 77, 75, 67, 70, 72, 75, 72]
-    sleeps.length.times do |i|
-      midi notes[i] + offset, sustain: 1.5, channel: 4, vel: 80
-      sleep sleeps[i]
-    end
+  2.times do |i|
+    midi chords[i][1] + offset, sustain: 0.6, channel: 4, vel: 120
+    sleep 2
+    midi chords[i][1] + offset, sustain: 1.1, channel: 4, vel: 120
+    sleep 2
+    midi chords[i][1] + offset, sustain: 0.8, channel: 4, vel: 120
+    sleep 1
+    midi chords[i][1] + offset, sustain: 0.8, channel: 4, vel: 120
+    sleep 1
+    midi chords[(i + 1) % 2][1] + offset, sustain: 0.7,  channel: 4, vel: 120
+    sleep 2
   end
 end
 
@@ -66,7 +54,7 @@ live_loop :arp do
   chords.each do |c|
     2.times do
       mk_bassline(c).each do |n|
-        midi n[0], sustain: n[1], vel_f: 0.5, channel: 2 if n[0] != 0
+        midi n[0], sustain: n[1], vel_f: 0.5, channel: 2 if n[1] != 0
         sleep 0.25
       end
     end
@@ -75,31 +63,36 @@ end
 
 patterns = [
   [
+    "k.k.....k.k.....",
+    "....s..s....s...",
     ".H.H.HH.HH.HHHHH",
   ],
   [
     "k.k.....k.k.....",
-    "..K.............",
     "....s..s....s...",
-    "....S..S....S...",
     ".H.H.HH.HH.HHHHH",
+    "..k.k.k.kkkk.kk.",
   ],
+  [
+    "k.k.....k.k.....",
+    "....s..s....s...",
+    ".H.H.HH.HH.HHHHH",
+    "....K..K....K...",
+  ]
 ]
 
 live_loop :drums do
-  current = 1
-  offset = 36
-  4.times do
-    16.times do |i|
-      patterns[current].each do |p|
-        midi 0 + offset, channel: 1 if p[i] == 'k'
-        midi 1 + offset, velocity: 128, channel: 1 if p[i] == 'K'
-        midi 2 + offset, channel: 1 if p[i] == 's'
-        midi 3 + offset, channel: 1 if p[i] == 'S'
-        midi 6 + offset, vel: [200, 97, 102, 130, 200, 96].ring[i], channel: 1 if p[i] == 'H'
-      end
-      
-      sleep 0.25
+  style = 2
+  offset = 24
+  16.times do |i|
+    patterns[style].each do |p|
+      midi 12 + offset, channel: 1 if p[i] == 'k'
+      midi 14 + offset, channel: 1 if p[i] == 's'
+      midi 24 + offset, vel: [200, 97, 102, 130, 200, 96].ring[i], channel: 1 if p[i] == 'H'
+      midi 15 + offset, channel: 1 if p[i] == 'K'
     end
+    
+    sleep 0.25
   end
 end
+
