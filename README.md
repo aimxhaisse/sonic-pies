@@ -22,7 +22,7 @@ This repository contains a collection of experiments with
 
 ## Songs
 
-* [Aerodynamic](https://mxs.sbrk.org/aerodynamic-en.html) -- an attempt to recreate the Daft Punk song Aerodynamic
+* [Aerodynamic]([https://mxs.sbrk.org/music/2016-01-21-aerodynamic-en.html]) -- an attempt to recreate the Daft Punk song Aerodynamic
 
 ## License
 
